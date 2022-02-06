@@ -1,6 +1,34 @@
-type ExampleEntity @entity {
-  id: ID!
-  count: BigInt!
-  tokenId: BigInt! # uint256
-  oldOwner: Bytes! # address
+type Incentive @entity {
+  id : ID!
+  rewardToken : Bytes!
+  pool : Bytes!
+  startTime : BigInt!
+  endTime : BigInt!
+  refundee : Bytes!
+  reward : BigInt!
+  stakedTokenId : [TokenStaked!]! @derivedFrom (field : "incentiveId")
+  active : Boolean!
+} 
+
+
+
+type TokenStaked @entity{
+  id : ID!
+  tokenId : BigInt!
+  incentiveId : Incentive
+  liquidity : BigInt !
 }
+
+type TokenUnstaked @entity{
+  id : ID!
+  tokenId : BigInt!
+  incentiveId : Bytes!
+
+}
+
+type DepositTransferred @entity {
+  id: ID!
+  tokenId: BigInt! 
+  oldOwner: Bytes! 
+  newOwner: Bytes! 
+} 

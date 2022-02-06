@@ -1,74 +1,91 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, crypto, ByteArray, ethereum, log } from "@graphprotocol/graph-ts"
+
+
 import {
-  Contract,
-  DepositTransferred,
-  IncentiveCreated,
-  IncentiveEnded,
-  RewardClaimed,
-  TokenStaked,
-  TokenUnstaked
+  DepositTransferred as DepositTransferredEvent,
+  IncentiveCreated as IncentiveCreatedEvent,
+  IncentiveEnded as IncentiveEndedEvent,
+  RewardClaimed as RewardClaimedEvent,
+  TokenStaked as TokenStakedEvent,
+  TokenUnstaked as TokenUnstakedEvent
 } from "../generated/Contract/Contract"
-import { ExampleEntity } from "../generated/schema"
 
-export function handleDepositTransferred(event: DepositTransferred): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+import {
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  DepositTransferred,
+  Incentive,
+  
+  TokenStaked,
+  TokenUnstaked,
+ 
+  
+} from "../generated/schema"
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
+export function handleIncentiveCreated(event: IncentiveCreatedEvent): void {
+  let encoded1 = ethereum.encode(ethereum.Value.fromAddress(event.params.rewardToken))!
+  let encoded2 = ethereum.encode(ethereum.Value.fromAddress(event.params.pool))!
+  let encoded3 = ethereum.encode(ethereum.Value.fromUnsignedBigInt(event.params.startTime))!
+  let encoded4 = ethereum.encode(ethereum.Value.fromUnsignedBigInt(event.params.endTime))!
+  let encoded5 = ethereum.encode(ethereum.Value.fromAddress(event.params.refundee))!
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
+  let encoded = ByteArray.fromHexString(`${encoded1.toHexString()}${encoded2.toHexString().slice(2)}${encoded3.toHexString().slice(2)}${encoded4.toHexString().slice(2)}${encoded5.toHexString().slice(2)}`)
 
-  // Entity fields can be set based on event parameters
-  entity.tokenId = event.params.tokenId
-  entity.oldOwner = event.params.oldOwner
+  let id = crypto.keccak256(encoded)
 
-  // Entities can be written to the store with `.save()`
+  let entity = new Incentive(id.toHexString())
+  entity.rewardToken = event.params.rewardToken
+  entity.pool = event.params.pool
+  entity.startTime = event.params.startTime
+  entity.endTime = event.params.endTime
+  entity.refundee = event.params.refundee
+  entity.reward = event.params.reward
+  entity.active = true;
   entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.claimReward(...)
-  // - contract.deposits(...)
-  // - contract.endIncentive(...)
-  // - contract.factory(...)
-  // - contract.getRewardInfo(...)
-  // - contract.incentives(...)
-  // - contract.maxIncentiveDuration(...)
-  // - contract.maxIncentiveStartLeadTime(...)
-  // - contract.nonfungiblePositionManager(...)
-  // - contract.onERC721Received(...)
-  // - contract.rewards(...)
-  // - contract.stakes(...)
 }
 
-export function handleIncentiveCreated(event: IncentiveCreated): void {}
+export function handleIncentiveEnded(event: IncentiveEndedEvent): void {
+  let entity = new Incentive(event.params.incentiveId.toHexString())
+  
+  
+  if (entity != null) {
+    entity.active = false;
+    entity.save();
+  }
+  
+}
 
-export function handleIncentiveEnded(event: IncentiveEnded): void {}
+export function handleTokenStaked(event: TokenStakedEvent): void {
+  let entity = new TokenStaked(
+    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+  )
+  entity.tokenId = event.params.tokenId
+  let incentiveCreated = Incentive.load(event.params.incentiveId.toHex())
+  if (!incentiveCreated){
+    incentiveCreated = new Incentive (event.params.incentiveId.toHex())
+  }
+  incentiveCreated.save()
+  //If incentiveId isn't unique, you may need to concat with event.logIndex.toString()
+  entity.incentiveId = incentiveCreated.id
+  entity.liquidity = event.params.liquidity
+  entity.save()
+  
+}
 
-export function handleRewardClaimed(event: RewardClaimed): void {}
+export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
+  let entity = new TokenUnstaked(
+    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+  )
+  entity.tokenId = event.params.tokenId
+  entity.incentiveId = event.params.incentiveId
+  entity.save()
+}
 
-export function handleTokenStaked(event: TokenStaked): void {}
-
-export function handleTokenUnstaked(event: TokenUnstaked): void {}
+export function handleDepositTransferred(event: DepositTransferredEvent): void {
+  let entity = new DepositTransferred(
+    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+  )
+  entity.tokenId = event.params.tokenId
+  entity.oldOwner = event.params.oldOwner
+  entity.newOwner = event.params.newOwner
+  entity.save()
+}
