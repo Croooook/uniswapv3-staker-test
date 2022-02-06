@@ -32,7 +32,10 @@ export function handleIncentiveCreated(event: IncentiveCreatedEvent): void {
 
   let id = crypto.keccak256(encoded)
 
-  let entity = new Incentive(id.toHexString())
+  let entity = Incentive.load(id.toHexString());
+  if(entity == null){
+    entity = new Incentive(id.toHexString());
+  }
   entity.rewardToken = event.params.rewardToken
   entity.pool = event.params.pool
   entity.startTime = event.params.startTime
@@ -44,11 +47,12 @@ export function handleIncentiveCreated(event: IncentiveCreatedEvent): void {
 }
 
 export function handleIncentiveEnded(event: IncentiveEndedEvent): void {
-  let entity = new Incentive(event.params.incentiveId.toHexString())
+  let entity = Incentive.load(event.params.incentiveId.toHexString())
   
   
   if (entity != null) {
     entity.active = false;
+    
     entity.save();
   }
   
