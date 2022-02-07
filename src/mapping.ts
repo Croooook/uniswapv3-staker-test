@@ -74,10 +74,13 @@ export function handleTokenStaked(event: TokenStakedEvent): void {
   entity.save()
   
   let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
-  if(TokenStakedInfoentity != null){
+  if(TokenStakedInfoentity == null){
+    TokenStakedInfoentity = new TokenStakedInfo(event.params.tokenId.toHex());
+  }
+  
     TokenStakedInfoentity.isStaked= true;
     TokenStakedInfoentity.save();
-  }
+  
 }
 
 export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
