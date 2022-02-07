@@ -14,7 +14,7 @@ import {
 
   DepositTransferred,
   Incentive,
-  
+  TokenStakedInfo,
   TokenStaked,
   TokenUnstaked,
  
@@ -73,6 +73,11 @@ export function handleTokenStaked(event: TokenStakedEvent): void {
   entity.liquidity = event.params.liquidity
   entity.save()
   
+  let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
+  if(TokenStakedInfoentity != null){
+    TokenStakedInfoentity.isStaked= true;
+    TokenStakedInfoentity.save();
+  }
 }
 
 export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
@@ -82,6 +87,12 @@ export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
   entity.tokenId = event.params.tokenId
   entity.incentiveId = event.params.incentiveId
   entity.save()
+
+  let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
+  if(TokenStakedInfoentity != null){
+    TokenStakedInfoentity.isStaked= false;
+    TokenStakedInfoentity.save();
+  }
 }
 
 export function handleDepositTransferred(event: DepositTransferredEvent): void {
@@ -92,4 +103,10 @@ export function handleDepositTransferred(event: DepositTransferredEvent): void {
   entity.oldOwner = event.params.oldOwner
   entity.newOwner = event.params.newOwner
   entity.save()
+
+  let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
+  if(TokenStakedInfoentity != null){
+    TokenStakedInfoentity.owner = event.params.newOwner;
+    TokenStakedInfoentity.save();
+  }
 }

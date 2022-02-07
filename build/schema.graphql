@@ -31,3 +31,9 @@ type DepositTransferred @entity {
   newOwner: Bytes! 
 } 
 
+type TokenStakedInfo @entity{
+  id : ID!
+  owner : Bytes!
+  isDeposited : Boolean!
+  isStaked : Boolean!
+}
