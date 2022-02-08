@@ -37,7 +37,7 @@ dataSources:
         - event: TokenUnstaked(indexed uint256,indexed bytes32)
           handler: handleTokenUnstaked
       file: ./src/mapping.ts
- -  kind: ethereum/contract
+  - kind: ethereum/contract
     name: NFTPositionsManager
     network: matic
     source:
