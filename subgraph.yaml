@@ -43,7 +43,7 @@ dataSources:
     source:
       address: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
       abi: NFTPositionsManager
-      startBlock: 23123833 
+      startBlock: 23123830
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
