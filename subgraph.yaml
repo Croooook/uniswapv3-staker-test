@@ -70,5 +70,5 @@ dataSources:
         - event: IncreaseLiquidity(indexed uint256,uint128,uint256,uint256)
           handler: handleIncreaseLiquidity
         - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
+          handler: handlePositionCreate 
       file: ./src/mapping.ts

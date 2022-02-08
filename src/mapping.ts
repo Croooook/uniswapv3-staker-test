@@ -1,4 +1,4 @@
-import { BigInt, crypto, ByteArray, ethereum, log } from "@graphprotocol/graph-ts"
+import { BigInt, crypto, ByteArray, ethereum, log, Address } from "@graphprotocol/graph-ts"
 
 
 import {
@@ -9,6 +9,10 @@ import {
   TokenStaked as TokenStakedEvent,
   TokenUnstaked as TokenUnstakedEvent
 } from "../generated/Contract/Contract"
+
+import {
+  Transfer 
+} from "../generated/NFTPositionsManager/NFTPositionsManager";
 
 import {
 
@@ -58,6 +62,22 @@ export function handleIncentiveEnded(event: IncentiveEndedEvent): void {
   
 }
 
+export function handlePositionCreate(event: Transfer): void {
+  let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
+
+  if (TokenStakedInfoentity == null) {
+      TokenStakedInfoentity = new TokenStakedInfo(event.params.tokenId.toHex());
+
+      TokenStakedInfoentity.owner = event.params.to;
+      
+      TokenStakedInfoentity.isStaked = false;
+      
+  }
+
+  TokenStakedInfoentity.save();
+}
+
+
 export function handleTokenStaked(event: TokenStakedEvent): void {
   let entity = new TokenStaked(
     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
@@ -74,13 +94,10 @@ export function handleTokenStaked(event: TokenStakedEvent): void {
   entity.save()
   
   let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
-  if(TokenStakedInfoentity == null){
-    TokenStakedInfoentity = new TokenStakedInfo(event.params.tokenId.toHex());
-  }
-  
+  if(TokenStakedInfoentity != null){
     TokenStakedInfoentity.isStaked= true;
     TokenStakedInfoentity.save();
-  
+  }
 }
 
 export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
