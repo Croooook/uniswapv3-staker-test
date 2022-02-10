@@ -11,7 +11,8 @@ import {
 } from "../generated/Contract/Contract"
 
 import {
-  Transfer 
+  Transfer ,
+  Collect as CollectEvent,
 } from "../generated/NFTPositionsManager/NFTPositionsManager";
 
 import {
@@ -129,4 +130,7 @@ export function handleDepositTransferred(event: DepositTransferredEvent): void {
     TokenStakedInfoentity.owner = event.params.newOwner;
     TokenStakedInfoentity.save();
   }
+}
+
+export function handleCollect(event: CollectEvent): void {
 }
