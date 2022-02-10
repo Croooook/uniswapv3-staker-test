@@ -357,15 +357,6 @@ export class TokenStakedInfo extends Entity {
     this.set("owner", Value.fromBytes(value));
   }
 
-  get isDeposited(): boolean {
-    let value = this.get("isDeposited");
-    return value!.toBoolean();
-  }
-
-  set isDeposited(value: boolean) {
-    this.set("isDeposited", Value.fromBoolean(value));
-  }
-
   get isStaked(): boolean {
     let value = this.get("isStaked");
     return value!.toBoolean();
