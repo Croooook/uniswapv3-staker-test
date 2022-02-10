@@ -12,7 +12,11 @@ import {
 
 import {
   Transfer ,
+  Approval as ApprovalEvent,
+  ApprovalForAll as ApprovalForAllEvent,
   Collect as CollectEvent,
+  DecreaseLiquidity as DecreaseLiquidityEvent,
+  IncreaseLiquidity as IncreaseLiquidityEvent,
 } from "../generated/NFTPositionsManager/NFTPositionsManager";
 
 import {
@@ -133,4 +137,17 @@ export function handleDepositTransferred(event: DepositTransferredEvent): void {
 }
 
 export function handleCollect(event: CollectEvent): void {
+}
+
+export function handleIncreaseLiquidity(event: IncreaseLiquidityEvent): void {
+  
+}
+
+export function handleDecreaseLiquidity(event: DecreaseLiquidityEvent): void {
+  
+}
+export function handleApprovalForAll(event: ApprovalForAllEvent): void {
+  
+}
+export function handleApproval(event: ApprovalEvent): void {
 }
