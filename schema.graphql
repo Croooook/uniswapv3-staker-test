@@ -8,7 +8,7 @@ type Incentive @entity {
   reward : BigInt!
   stakedTokenId : [TokenStaked!]! @derivedFrom (field : "incentiveId")
   active : Boolean!
-  tokenstakedinfo : TokenStakedInfo!
+  incentivePositions: [IncentivePosition!]! @derivedFrom(field: "incentive")
 } 
 
 type TokenStaked @entity{
@@ -37,5 +37,11 @@ type TokenStakedInfo @entity{
   owner : Bytes!
   tokenId: BigInt!
   isStaked : Boolean!
-  incentives : [Incentive!]! @derivedFrom(field: "tokenstakedinfo")
+  incentives : [IncentivePosition!]! @derivedFrom(field: "tokenstakedinfo")
+}
+
+type IncentivePosition @entity {
+  id: ID!
+  incentive: Incentive!
+  tokenstakedinfo : TokenStakedInfo!
 }

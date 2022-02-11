@@ -22,7 +22,6 @@ export class Incentive extends Entity {
     this.set("endTime", Value.fromBigInt(BigInt.zero()));
     this.set("refundee", Value.fromBytes(Bytes.empty()));
     this.set("reward", Value.fromBigInt(BigInt.zero()));
-    this.set("tokenstakedinfo", Value.fromString(""));
   }
 
   save(): void {
@@ -123,13 +122,13 @@ export class Incentive extends Entity {
     this.set("active", Value.fromBoolean(value));
   }
 
-  get tokenstakedinfo(): string {
-    let value = this.get("tokenstakedinfo");
-    return value!.toString();
+  get incentivePositions(): Array<string> {
+    let value = this.get("incentivePositions");
+    return value!.toStringArray();
   }
 
-  set tokenstakedinfo(value: string) {
-    this.set("tokenstakedinfo", Value.fromString(value));
+  set incentivePositions(value: Array<string>) {
+    this.set("incentivePositions", Value.fromStringArray(value));
   }
 }
 
@@ -393,5 +392,61 @@ export class TokenStakedInfo extends Entity {
 
   set incentives(value: Array<string>) {
     this.set("incentives", Value.fromStringArray(value));
+  }
+}
+
+export class IncentivePosition extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("incentive", Value.fromString(""));
+    this.set("tokenstakedinfo", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save IncentivePosition entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save IncentivePosition entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("IncentivePosition", id.toString(), this);
+    }
+  }
+
+  static load(id: string): IncentivePosition | null {
+    return changetype<IncentivePosition | null>(
+      store.get("IncentivePosition", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get incentive(): string {
+    let value = this.get("incentive");
+    return value!.toString();
+  }
+
+  set incentive(value: string) {
+    this.set("incentive", Value.fromString(value));
+  }
+
+  get tokenstakedinfo(): string {
+    let value = this.get("tokenstakedinfo");
+    return value!.toString();
+  }
+
+  set tokenstakedinfo(value: string) {
+    this.set("tokenstakedinfo", Value.fromString(value));
   }
 }

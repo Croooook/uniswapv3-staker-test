@@ -18,6 +18,7 @@ import {
   TokenStakedInfo,
   TokenStaked,
   TokenUnstaked,
+  IncentivePosition
  
   
 } from "../generated/schema"
@@ -44,6 +45,7 @@ export function handleIncentiveCreated(event: IncentiveCreatedEvent): void {
   entity.refundee = event.params.refundee
   entity.reward = event.params.reward
   entity.active = true;
+  
   entity.save()
 }
 
@@ -82,6 +84,22 @@ export function handleTokenStaked(event: TokenStakedEvent): void {
     TokenStakedInfoentity.isStaked= true;
     TokenStakedInfoentity.save();
   }
+
+let tokenstakedinfoentity2 = TokenStakedInfo.load(event.params.tokenId.toHex());
+if(!tokenstakedinfoentity2){
+  tokenstakedinfoentity2 = new TokenStakedInfo (event.params.tokenId.toHex())
+}
+tokenstakedinfoentity2.save()
+
+
+  let incentivePosition = IncentivePosition.load(event.params.incentiveId.toHex() + event.params.tokenId.toHex())
+  if (incentivePosition == null) {
+    incentivePosition = new IncentivePosition(event.params.incentiveId.toHex() + event.params.tokenId.toHex());
+  }
+  incentivePosition.incentive = incentiveCreated.id;
+  incentivePosition.tokenstakedinfo = tokenstakedinfoentity2.id;
+  
+  incentivePosition.save();
 }
 
 export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
