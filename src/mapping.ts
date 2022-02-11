@@ -133,3 +133,6 @@ export function handleDepositTransferred(event: DepositTransferredEvent): void {
   }
 }
 
+export function handleRewardClaimed(event: RewardClaimedEvent): void {
+  
+}
