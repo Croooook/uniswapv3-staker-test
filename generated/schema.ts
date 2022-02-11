@@ -22,6 +22,7 @@ export class Incentive extends Entity {
     this.set("endTime", Value.fromBigInt(BigInt.zero()));
     this.set("refundee", Value.fromBytes(Bytes.empty()));
     this.set("reward", Value.fromBigInt(BigInt.zero()));
+    this.set("tokenstakedinfo", Value.fromString(""));
   }
 
   save(): void {
@@ -120,6 +121,15 @@ export class Incentive extends Entity {
 
   set active(value: boolean) {
     this.set("active", Value.fromBoolean(value));
+  }
+
+  get tokenstakedinfo(): string {
+    let value = this.get("tokenstakedinfo");
+    return value!.toString();
+  }
+
+  set tokenstakedinfo(value: string) {
+    this.set("tokenstakedinfo", Value.fromString(value));
   }
 }
 
@@ -320,6 +330,7 @@ export class TokenStakedInfo extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("owner", Value.fromBytes(Bytes.empty()));
+    this.set("tokenId", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -357,6 +368,15 @@ export class TokenStakedInfo extends Entity {
     this.set("owner", Value.fromBytes(value));
   }
 
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
+  }
+
   get isStaked(): boolean {
     let value = this.get("isStaked");
     return value!.toBoolean();
@@ -364,5 +384,14 @@ export class TokenStakedInfo extends Entity {
 
   set isStaked(value: boolean) {
     this.set("isStaked", Value.fromBoolean(value));
+  }
+
+  get incentives(): Array<string> {
+    let value = this.get("incentives");
+    return value!.toStringArray();
+  }
+
+  set incentives(value: Array<string>) {
+    this.set("incentives", Value.fromStringArray(value));
   }
 }

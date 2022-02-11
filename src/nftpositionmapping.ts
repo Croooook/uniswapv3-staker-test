@@ -20,7 +20,7 @@ import {
         TokenStakedInfoentity = new TokenStakedInfo(event.params.tokenId.toHex());
   
         TokenStakedInfoentity.owner = event.params.to;
-        
+        TokenStakedInfoentity.tokenId = event.params.tokenId;
         TokenStakedInfoentity.isStaked = false;
         
     }
@@ -29,7 +29,8 @@ import {
   }
 
 
-  export function handleCollect(event: CollectEvent): void {
+export function handleCollect(event: CollectEvent): void {
+
 }
 
 export function handleIncreaseLiquidity(event: IncreaseLiquidityEvent): void {
