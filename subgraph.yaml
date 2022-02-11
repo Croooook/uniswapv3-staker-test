@@ -71,4 +71,4 @@ dataSources:
           handler: handleIncreaseLiquidity
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handlePositionCreate 
-      file: ./src/mapping.ts
+      file: ./src/nftpositionmapping.ts
