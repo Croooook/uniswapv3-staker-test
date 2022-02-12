@@ -110,11 +110,19 @@ export function handleDepositTransferred(event: DepositTransferredEvent): void {
   
 
   let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
-  if(TokenStakedInfoentity != null){
-    TokenStakedInfoentity.owner = event.params.newOwner;
+  
+    if (TokenStakedInfoentity == null) {
+        TokenStakedInfoentity = new TokenStakedInfo(event.params.tokenId.toHex());
+  
+        TokenStakedInfoentity.owner = event.params.newOwner;
+        TokenStakedInfoentity.tokenId = event.params.tokenId;
+        TokenStakedInfoentity.isStaked = false;
+        
+    }
+  
     TokenStakedInfoentity.save();
-  }
 }
+
 
 export function handleRewardClaimed(event: RewardClaimedEvent): void {
   
