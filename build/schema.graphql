@@ -6,7 +6,6 @@ type Incentive @entity {
   endTime : BigInt!
   refundee : Bytes!
   reward : BigInt!
-  
   active : Boolean!
   incentivePositions: [IncentivePosition!]! @derivedFrom(field: "incentive")
 } 
