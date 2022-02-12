@@ -6,31 +6,14 @@ type Incentive @entity {
   endTime : BigInt!
   refundee : Bytes!
   reward : BigInt!
-  stakedTokenId : [TokenStaked!]! @derivedFrom (field : "incentiveId")
+  
   active : Boolean!
   incentivePositions: [IncentivePosition!]! @derivedFrom(field: "incentive")
 } 
 
-type TokenStaked @entity{
-  id : ID!
-  tokenId : BigInt!
-  incentiveId : Incentive
-  liquidity : BigInt !
-}
 
-type TokenUnstaked @entity{
-  id : ID!
-  tokenId : BigInt!
-  incentiveId : Bytes!
 
-}
 
-type DepositTransferred @entity {
-  id: ID!
-  tokenId: BigInt! 
-  oldOwner: Bytes! 
-  newOwner: Bytes! 
-} 
 
 type TokenStakedInfo @entity{
   id : ID!

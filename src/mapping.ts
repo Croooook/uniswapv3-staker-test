@@ -13,11 +13,10 @@ import {
 
 import {
 
-  DepositTransferred,
+  
   Incentive,
   TokenStakedInfo,
-  TokenStaked,
-  TokenUnstaked,
+  
   IncentivePosition
  
   
@@ -65,19 +64,14 @@ export function handleIncentiveEnded(event: IncentiveEndedEvent): void {
 
 
 export function handleTokenStaked(event: TokenStakedEvent): void {
-  let entity = new TokenStaked(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.tokenId = event.params.tokenId
+  
   let incentiveCreated = Incentive.load(event.params.incentiveId.toHex())
   if (!incentiveCreated){
     incentiveCreated = new Incentive (event.params.incentiveId.toHex())
   }
   incentiveCreated.save()
   //If incentiveId isn't unique, you may need to concat with event.logIndex.toString()
-  entity.incentiveId = incentiveCreated.id
-  entity.liquidity = event.params.liquidity
-  entity.save()
+ 
   
   let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
   if(TokenStakedInfoentity != null){
@@ -103,12 +97,7 @@ tokenstakedinfoentity2.save()
 }
 
 export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
-  let entity = new TokenUnstaked(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.tokenId = event.params.tokenId
-  entity.incentiveId = event.params.incentiveId
-  entity.save()
+  
 
   let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
   if(TokenStakedInfoentity != null){
@@ -118,13 +107,7 @@ export function handleTokenUnstaked(event: TokenUnstakedEvent): void {
 }
 
 export function handleDepositTransferred(event: DepositTransferredEvent): void {
-  let entity = new DepositTransferred(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.tokenId = event.params.tokenId
-  entity.oldOwner = event.params.oldOwner
-  entity.newOwner = event.params.newOwner
-  entity.save()
+  
 
   let TokenStakedInfoentity = TokenStakedInfo.load(event.params.tokenId.toHex());
   if(TokenStakedInfoentity != null){
