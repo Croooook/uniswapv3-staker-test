@@ -10,10 +10,6 @@ type Incentive @entity {
   incentivePositions: [IncentivePosition!]! @derivedFrom(field: "incentive")
 } 
 
-
-
-
-
 type TokenStakedInfo @entity{
   id : ID!
   owner : Bytes!
